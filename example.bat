@@ -1,0 +1,1 @@
+PowerShell -File "%~dp0script.ps1" -Parameter1 Value1
