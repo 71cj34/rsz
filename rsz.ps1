@@ -5,20 +5,34 @@ Add-Type -AssemblyName System.Drawing
 param (
     [Parameter(Mandatory=$false)]
     [Alias("d")]
-    [string]$directory = (Get-Location).Path,
+    [string]$directory,
     
     [Parameter(Mandatory=$false)]
     [Alias("fs")]
-    [double]$filesize = 3,
+    [double]$filesize,
     
     [Parameter(Mandatory=$false)]
     [Alias("rs")]
-    [double]$resize = 80,
+    [double]$resize,
     
     [Parameter(Mandatory=$false)]
     [Alias("r")]
     [switch]$recurse = $false
 )
+
+# Set default values if parameters are not provided
+if (-not $PSBoundParameters.ContainsKey('directory')) {
+    $directory = (Get-Location).Path
+}
+
+if (-not $PSBoundParameters.ContainsKey('filesize')) {
+    $filesize = 3.0
+}
+
+if (-not $PSBoundParameters.ContainsKey('resize')) {
+    $resize = 80.0
+}
+
 
 # Normalize resize value (convert decimal to percentage if needed)
 if ($resize -lt 1) {
