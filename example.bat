@@ -1,1 +1,1 @@
-PowerShell -File "%~dp0script.ps1" -Parameter1 Value1
+PowerShell -File "%~dp0rsz.ps1" -d "insert\your\dir" -fs "5" -rs "70" -r
