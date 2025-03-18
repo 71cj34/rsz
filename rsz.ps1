@@ -1,7 +1,3 @@
-# Load the System.Drawing assembly
-Add-Type -AssemblyName System.Drawing
-
-# Define parameters
 param (
     [Parameter(Mandatory=$false)]
     [Alias("d")]
@@ -19,6 +15,8 @@ param (
     [Alias("r")]
     [switch]$recurse = $false
 )
+
+Add-Type -AssemblyName System.Drawing
 
 # Set default values if parameters are not provided
 if (-not $PSBoundParameters.ContainsKey('directory')) {
@@ -56,7 +54,7 @@ $imageFiles = Get-ChildItem -Path $directory -Include *.jpg, *.jpeg, *.png, *.bm
 # Process each image
 foreach ($file in $imageFiles) {
     $originalFilePath = $file.FullName
-    Write-Host "Processing $originalFilePath (Original Size: $([math]::Round($file.Length / 1MB, 2)) MB)"
+    Write-Host "`nProcessing $originalFilePath (Original Size: $([math]::Round($file.Length / 1MB, 2)) MB)"
     
     try {
         # Check if the file size is above the threshold
@@ -126,4 +124,6 @@ foreach ($file in $imageFiles) {
     }
 }
 
-Write-Host "Image processing complete."
+
+Write-Host "`nImage processing complete. `n"
+Read-Host "Press Enter to exit..."
