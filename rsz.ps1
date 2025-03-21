@@ -17,7 +17,11 @@ param (
 
     [Parameter(Mandatory=$false)]
     [Alias("intm")]
-    [string]$interpolerationMode,
+    [string]$interpoleration,
+
+    [Parameter(Mandatory=$false)]
+    [Alias("smtm")]
+    [string]$smoothing
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -35,8 +39,12 @@ if (-not $PSBoundParameters.ContainsKey('resize')) {
     $resize = 80.0
 }
 
-if (-not $PSBoundParameters.ContainsKey('interpolerationMode')) {
-    $interpolerationMode = "HighQualityBicubic"
+if (-not $PSBoundParameters.ContainsKey('interpoleration')) {
+    $interpoleration = "HighQualityBicubic"
+}
+
+if (-not $PSBoundParameters.ContainsKey('smoothing')) {
+    $smoothing = "HighQuality"
 }
 
 
@@ -93,8 +101,8 @@ foreach ($file in $imageFiles) {
                 $graphics = [System.Drawing.Graphics]::FromImage($resizedImage)
                 
                 # Set the interpolation mode for better quality
-                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::$interpolerationMode
-                $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::$interpoleration
+                $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::$smoothing
                 $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
                 
                 # Draw the original image onto the bitmap at the new size

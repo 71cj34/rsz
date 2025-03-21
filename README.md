@@ -63,7 +63,17 @@ Sets the interpoleration mode in the .NET `Drawing2D` namespace. Find a list of 
 Defaults to HighQualityBicubic, the highest quality setting. Accepts strings.
 
 ```
-rsz.ps1 -r
+rsz.ps1 -intm "NearestNeighbor"
+```
+
+### `-smtm`
+
+Sets the smoothing mode in the .NET `Drawing2D` namespace. Find a list of possible values [on the .NET docs](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.drawing2d.smoothingmode?view=windowsdesktop-9.0). Set this option to something else to disable antialiasing in case there are artifacts or visual errors on the outputs.
+
+Defaults to AntiAlias. Accepts strings.
+
+```
+rsz.ps1 -smtm "None"
 ```
 
 ## License
