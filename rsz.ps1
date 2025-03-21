@@ -13,7 +13,11 @@ param (
     
     [Parameter(Mandatory=$false)]
     [Alias("r")]
-    [switch]$recurse = $false
+    [switch]$recurse = $false,
+
+    [Parameter(Mandatory=$false)]
+    [Alias("intm")]
+    [string]$interpolerationMode,
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -29,6 +33,10 @@ if (-not $PSBoundParameters.ContainsKey('filesize')) {
 
 if (-not $PSBoundParameters.ContainsKey('resize')) {
     $resize = 80.0
+}
+
+if (-not $PSBoundParameters.ContainsKey('interpolerationMode')) {
+    $interpolerationMode = "HighQualityBicubic"
 }
 
 
@@ -85,7 +93,7 @@ foreach ($file in $imageFiles) {
                 $graphics = [System.Drawing.Graphics]::FromImage($resizedImage)
                 
                 # Set the interpolation mode for better quality
-                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+                $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::$interpolerationMode
                 $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
                 $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
                 

@@ -1,6 +1,6 @@
 # rsz
 
-This repo contains a functional Powershell script `rsz.ps1` that resizes directories of images to fit under a specified size.
+This repo contains a function-forward Powershell script `rsz.ps1` that resizes directories of images to fit under a specified size.
 
 ## QuickStart
 
@@ -47,6 +47,20 @@ rsz.ps1 -fs 0.55
 Whether to search for files recursively in the target directory, allowing it to target folders and subfolders.
 
 Defaults to false.
+
+```
+rsz.ps1 -r
+```
+
+## Parameters (Advanced)
+
+Unless you know exactly why you need the parameters in this section, you probably don't need them.
+
+### `-intm`
+
+Sets the interpoleration mode in the .NET `Drawing2D` namespace. Find a list of possible values [on the .NET docs](https://learn.microsoft.com/en-us/dotnet/api/system.drawing.drawing2d.interpolationmode?view=windowsdesktop-9.0).
+
+Defaults to HighQualityBicubic, the highest quality setting. Accepts strings.
 
 ```
 rsz.ps1 -r
