@@ -16,6 +16,10 @@ param (
     [switch]$recurse = $false,
 
     [Parameter(Mandatory=$false)]
+    [Alias("ext")]
+    [string]$exts,
+
+    [Parameter(Mandatory=$false)]
     [Alias("intm")]
     [string]$interpoleration,
 
@@ -47,6 +51,9 @@ if (-not $PSBoundParameters.ContainsKey('smoothing')) {
     $smoothing = "HighQuality"
 }
 
+if (-not $PSBoundParameters.ContainsKey('exts')) {
+    $exts = "jpg jpeg png bmp gif"
+}
 
 # Normalize resize value (convert decimal to percentage if needed)
 if ($resize -lt 1) {
@@ -64,8 +71,25 @@ if (-not (Test-Path -Path $directory -PathType Container)) {
     exit 1
 }
 
+$extsList = $exts.split(" ")
+$extsListAfter = @()
+try {
+    foreach ($ext in $extslist) {
+        # is there an easier way to do this?
+        $preloadedExt = '*.' + $ext
+        $extsListAfter += $preloadedExt
+    }
+    $extsString = '"' + ($extsListAfter -join ', ') + '"'
+    Write-Host $extsString
+} catch {
+    Write-Host "`nThere was an issue processing your extension list (-ext)."
+    Write-Host $_.Exception.Message
+    Write-Host $_.ScriptStackTrace
+}
+
+
 # Get all image files in the directory
-$imageFiles = Get-ChildItem -Path $directory -Include *.jpg, *.jpeg, *.png, *.bmp, *.gif -Recurse:$recurse
+$imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
 
 # Process each image
 foreach ($file in $imageFiles) {
