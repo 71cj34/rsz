@@ -12,12 +12,16 @@ param (
     [double]$resize,
     
     [Parameter(Mandatory=$false)]
+    [Alias("ext")]
+    [string]$exts,
+
+    [Parameter(Mandatory=$false)]
     [Alias("r")]
     [switch]$recurse = $false,
 
     [Parameter(Mandatory=$false)]
-    [Alias("ext")]
-    [string]$exts,
+    [Alias("v")]
+    [switch]$verbose = $false,
 
     [Parameter(Mandatory=$false)]
     [Alias("intm")]
@@ -27,6 +31,8 @@ param (
     [Alias("smtm")]
     [string]$smoothing
 )
+
+$stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
 Add-Type -AssemblyName System.Drawing
 
@@ -71,6 +77,10 @@ if (-not (Test-Path -Path $directory -PathType Container)) {
     exit 1
 }
 
+if ($verbose) {
+    Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
+}
+
 $extsList = $exts.split(" ")
 $extsListAfter = @()
 try {
@@ -85,11 +95,15 @@ try {
     Write-Host "`nThere was an issue processing your extension list (-ext)."
     Write-Host $_.Exception.Message
     Write-Host $_.ScriptStackTrace
+    throw "Extension Error"
 }
-
 
 # Get all image files in the directory
 $imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
+
+if ($verbose) {
+    Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
+}
 
 # Process each image
 foreach ($file in $imageFiles) {
@@ -110,6 +124,9 @@ foreach ($file in $imageFiles) {
                     Remove-Item -Path $tempFileWithExt -Force
                 }
                 Rename-Item -Path $tempFilePath -NewName ([System.IO.Path]::GetFileName($tempFileWithExt)) -Force
+                if ($verbose) {
+                    Write-Host "`nTemporary file path for $originalFilePath created successfully.`n" -BackgroundColor Yellow
+                }
                 
                 # Use a different approach to resize the image
                 $image = [System.Drawing.Image]::FromFile($originalFilePath)
@@ -131,6 +148,10 @@ foreach ($file in $imageFiles) {
                 
                 # Draw the original image onto the bitmap at the new size
                 $graphics.DrawImage($image, (New-Object System.Drawing.Rectangle(0, 0, $newWidth, $newHeight)))
+
+                if ($verbose) {
+                    Write-Host "`nImage processing for $originalFilePath completed successfully.`n" -BackgroundColor Yellow
+                }
                 
                 # Save the resized image
                 $encoder = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | 
@@ -141,15 +162,27 @@ foreach ($file in $imageFiles) {
                     [System.Drawing.Imaging.Encoder]::Quality, 90L)
                 
                 $resizedImage.Save($tempFileWithExt, $encoder, $encoderParams)
+
+                if ($verbose) {
+                    Write-Host "`nImage $originalFilePath saved successfully.`n" -BackgroundColor Yellow
+                }
                 
                 # Clean up
                 $graphics.Dispose()
                 $image.Dispose()
                 $resizedImage.Dispose()
+
+                if ($verbose) {
+                    Write-Host "`nGarbage collection for $originalFilePath finished.`n" -BackgroundColor Yellow
+                }
                 
                 # Replace the original file with the resized one
                 Remove-Item -Path $originalFilePath -Force
                 Move-Item -Path $tempFileWithExt -Destination $originalFilePath -Force
+
+                if ($verbose) {
+                    Write-Host "`nRemoval of original file $originalFilePath completed successfully.`n" -BackgroundColor Yellow
+                }
             } else {
                 Write-Host "Cycle $($i): File is below $filesize MB ($([math]::Round($currentFile.Length / 1MB, 2)) MB). Skipping..."
                 break # Exit the loop if the file is below the threshold
@@ -164,6 +197,12 @@ foreach ($file in $imageFiles) {
     }
 }
 
+$stopwatch.Stop()
+if ($verbose) {
+    Write-Host "Script completed." -BackgroundColor Yellow
+    Write-Host "Time taken: $($stopwatch.Elapsed.ToString())" -BackgroundColor Yellow
+    Write-Host "Files processed: $($imageFiles.Length)" -BackgroundColor Yellow
+}
 
 Write-Host "`nImage processing complete. `n"
 Read-Host "Press Enter to exit..."
