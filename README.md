@@ -42,14 +42,36 @@ rsz.ps1 -fs 90
 rsz.ps1 -fs 0.55
 ```
 
+### `-ext`
+
+Specify a list of file extensions the script will search for. 
+
+Syntax: "<ext1> <ext2> .... <extN>"
+
+Defaults to "jpg jpeg png bmp gif". Note that using this binding will **replace** this default set with the one you specify, not add to it.
+
+```
+rsz.ps1 -ext "tiff bmp"
+```
+
 ### `-r`
 
 Whether to search for files recursively in the target directory, allowing it to target folders and subfolders.
 
-Defaults to false.
+Defaults to false. Include to turn on.
 
 ```
 rsz.ps1 -r
+```
+
+### `-v`
+
+Verbose logging. Outputs breakpoints, script position updates, and statistics at the end.
+
+Defaults to false. Include to turn on.
+
+```
+rsz.ps1 -v
 ```
 
 ## Parameters (Advanced)
