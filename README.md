@@ -46,7 +46,7 @@ rsz.ps1 -fs 0.55
 
 Specify a list of file extensions the script will search for. 
 
-Syntax: "<ext1> <ext2> .... <extN>"
+Syntax: "ext1 ext2 .... extN"
 
 Defaults to "jpg jpeg png bmp gif". Note that using this binding will **replace** this default set with the one you specify, not add to it.
 
