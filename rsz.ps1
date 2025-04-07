@@ -81,25 +81,33 @@ if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
-$extsList = $exts.split(" ")
-$extsListAfter = @()
-try {
-    foreach ($ext in $extslist) {
-        # is there an easier way to do this?
-        $preloadedExt = '*.' + $ext
-        $extsListAfter += $preloadedExt
-    }
-    $extsString = '"' + ($extsListAfter -join ', ') + '"'
-    Write-Host $extsString
-} catch {
-    Write-Host "`nThere was an issue processing your extension list (-ext)."
-    Write-Host $_.Exception.Message
-    Write-Host $_.ScriptStackTrace
-    throw "Extension Error"
-}
+# $extsList = $exts.split(" ")
+# $extsListAfter = @()
+# try {
+#     foreach ($ext in $extslist) {
+#         # is there an easier way to do this?
+#         $preloadedExt = "'." + $ext + "'"
+#         $extsListAfter += $preloadedExt
+#     }
+#     $extsString = ($extsListAfter -join ', ')
+#     Write-Host $extsString
+# } catch {
+#     Write-Host "`nThere was an issue processing your extension list (-ext)."
+#     Write-Host $_.Exception.Message
+#     Write-Host $_.ScriptStackTrace
+#     throw "Extension Error"
+# }
+$extsList = $exts.split(" ") | ForEach-Object { ".$_" }
+
 
 # Get all image files in the directory
-$imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
+# $imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
+# $imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $_.Extension -in $extsString }
+$imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $extsList -contains $_.Extension.ToLower() }
+
+
+Write-Host "Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { `$_.Extension -in $extsString }"
+Write-Host "Files gotten: $imageFiles"
 
 if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
