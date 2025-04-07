@@ -21,7 +21,7 @@ param (
 
     [Parameter(Mandatory=$false)]
     [Alias("v")]
-    [switch]$verbose = $false,
+    [switch]$verbose_log = $false,
 
     [Parameter(Mandatory=$false)]
     [Alias("intm")]
@@ -77,7 +77,7 @@ if (-not (Test-Path -Path $directory -PathType Container)) {
     exit 1
 }
 
-if ($verbose) {
+if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
@@ -101,7 +101,7 @@ try {
 # Get all image files in the directory
 $imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
 
-if ($verbose) {
+if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
@@ -124,7 +124,7 @@ foreach ($file in $imageFiles) {
                     Remove-Item -Path $tempFileWithExt -Force
                 }
                 Rename-Item -Path $tempFilePath -NewName ([System.IO.Path]::GetFileName($tempFileWithExt)) -Force
-                if ($verbose) {
+                if ($verbose_log) {
                     Write-Host "`nTemporary file path for $originalFilePath created successfully.`n" -BackgroundColor Yellow
                 }
                 
@@ -149,7 +149,7 @@ foreach ($file in $imageFiles) {
                 # Draw the original image onto the bitmap at the new size
                 $graphics.DrawImage($image, (New-Object System.Drawing.Rectangle(0, 0, $newWidth, $newHeight)))
 
-                if ($verbose) {
+                if ($verbose_log) {
                     Write-Host "`nImage processing for $originalFilePath completed successfully.`n" -BackgroundColor Yellow
                 }
                 
@@ -163,7 +163,7 @@ foreach ($file in $imageFiles) {
                 
                 $resizedImage.Save($tempFileWithExt, $encoder, $encoderParams)
 
-                if ($verbose) {
+                if ($verbose_log) {
                     Write-Host "`nImage $originalFilePath saved successfully.`n" -BackgroundColor Yellow
                 }
                 
@@ -172,7 +172,7 @@ foreach ($file in $imageFiles) {
                 $image.Dispose()
                 $resizedImage.Dispose()
 
-                if ($verbose) {
+                if ($verbose_log) {
                     Write-Host "`nGarbage collection for $originalFilePath finished.`n" -BackgroundColor Yellow
                 }
                 
@@ -180,7 +180,7 @@ foreach ($file in $imageFiles) {
                 Remove-Item -Path $originalFilePath -Force
                 Move-Item -Path $tempFileWithExt -Destination $originalFilePath -Force
 
-                if ($verbose) {
+                if ($verbose_log) {
                     Write-Host "`nRemoval of original file $originalFilePath completed successfully.`n" -BackgroundColor Yellow
                 }
             } else {
@@ -198,7 +198,7 @@ foreach ($file in $imageFiles) {
 }
 
 $stopwatch.Stop()
-if ($verbose) {
+if ($verbose_log) {
     Write-Host "Script completed." -BackgroundColor Yellow
     Write-Host "Time taken: $($stopwatch.Elapsed.ToString())" -BackgroundColor Yellow
     Write-Host "Files processed: $($imageFiles.Length)" -BackgroundColor Yellow
