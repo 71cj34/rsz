@@ -3,7 +3,7 @@
 This repo contains a function-forward Powershell script `rsz.ps1` that resizes directories of images to fit under a specified size.
 
 Take your storage utilization from this to this!
-![image of two google drive interfaces. one is using significantly less storage](jasoncheng.me/img/rsz_b&a.png)
+![image of two google drive interfaces. one is using significantly less storage](https://jasoncheng.me/img/rsz_b&a.png)
 
 ## QuickStart
 
