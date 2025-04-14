@@ -81,28 +81,6 @@ if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
-# $extsList = $exts.split(" ")
-# $extsListAfter = @()
-# try {
-#     foreach ($ext in $extslist) {
-#         # is there an easier way to do this?
-#         $preloadedExt = "'." + $ext + "'"
-#         $extsListAfter += $preloadedExt
-#     }
-#     $extsString = ($extsListAfter -join ', ')
-#     Write-Host $extsString
-# } catch {
-#     Write-Host "`nThere was an issue processing your extension list (-ext)."
-#     Write-Host $_.Exception.Message
-#     Write-Host $_.ScriptStackTrace
-#     throw "Extension Error"
-# }
-$extsList = $exts.split(" ") | ForEach-Object { ".$_" }
-
-
-# Get all image files in the directory
-# $imageFiles = Get-ChildItem -Path $directory -Include $extsString -Recurse:$recurse
-# $imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $_.Extension -in $extsString }
 $imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $extsList -contains $_.Extension.ToLower() }
 
 
@@ -113,7 +91,6 @@ if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
-# Process each image
 foreach ($file in $imageFiles) {
     $originalFilePath = $file.FullName
     Write-Host "`nProcessing $originalFilePath (Original Size: $([math]::Round($file.Length / 1MB, 2)) MB)"
@@ -136,7 +113,6 @@ foreach ($file in $imageFiles) {
                     Write-Host "`nTemporary file path for $originalFilePath created successfully.`n" -BackgroundColor Yellow
                 }
                 
-                # Use a different approach to resize the image
                 $image = [System.Drawing.Image]::FromFile($originalFilePath)
                 
                 # Calculate new dimensions based on resize percentage
@@ -161,7 +137,6 @@ foreach ($file in $imageFiles) {
                     Write-Host "`nImage processing for $originalFilePath completed successfully.`n" -BackgroundColor Yellow
                 }
                 
-                # Save the resized image
                 $encoder = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | 
                     Where-Object { $_.FormatDescription -eq "JPEG" }
                 
