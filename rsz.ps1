@@ -81,8 +81,9 @@ if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
 }
 
-$imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $extsList -contains $_.Extension.ToLower() }
+$extsList = $exts.split(" ") | ForEach-Object { ".$_" }
 
+$imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $extsList -contains $_.Extension.ToLower() }
 
 Write-Host "Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { `$_.Extension -in $extsString }"
 Write-Host "Files gotten: $imageFiles"
@@ -113,6 +114,7 @@ foreach ($file in $imageFiles) {
                     Write-Host "`nTemporary file path for $originalFilePath created successfully.`n" -BackgroundColor Yellow
                 }
                 
+                # Use a different approach to resize the image
                 $image = [System.Drawing.Image]::FromFile($originalFilePath)
                 
                 # Calculate new dimensions based on resize percentage
@@ -137,6 +139,7 @@ foreach ($file in $imageFiles) {
                     Write-Host "`nImage processing for $originalFilePath completed successfully.`n" -BackgroundColor Yellow
                 }
                 
+                # Save the resized image
                 $encoder = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | 
                     Where-Object { $_.FormatDescription -eq "JPEG" }
                 
