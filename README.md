@@ -102,6 +102,16 @@ Defaults to AntiAlias. Accepts strings.
 rsz.ps1 -smtm "None"
 ```
 
+## Explanation
+
+Essentially, what this script does is:
+- Find all matching images in a directory (`-d`, `-ext`, `-r`)
+- For each image that is over the size threshold (`-fs`), the script will:
+  - Resize the image's dimensions down a certain amount (`-rs`) with a certain algorithm (`-intm`, `-smtm`)
+  - If the image is still over the size threshold, resize it again.
+  - At maximum, three resizes will be done for each image to keep it from getting stuck or excessively downscaling images.
+- Exit
+
 ## License
 
 Available under Apache 2.0.
