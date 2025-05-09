@@ -85,8 +85,12 @@ $extsList = $exts.split(" ") | ForEach-Object { ".$_" }
 
 $imageFiles = Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { $extsList -contains $_.Extension.ToLower() }
 
-Write-Host "Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { `$_.Extension -in $extsString }"
+Write-Host "Executing command Get-ChildItem -Path $directory -Recurse:$recurse | Where-Object { `$_.Extension -in $extsString }"
 Write-Host "Files gotten: $imageFiles"
+
+if (!imageFiles) {
+    Write-Error "Failed to get any image files that match your arguments. Are you sure your directory (-d) and extensions (-ext) are correct?"
+}
 
 if ($verbose_log) {
     Write-Host "`nFinished getting all files (Get-ChildItem).`n" -BackgroundColor Yellow
